@@ -31,13 +31,6 @@ app.get("/users", (req, res) => {
   }
 });
 
-// app.get("/find?id=", (req, res) => {
-//   const q = url.parse(req.url, true);
-//   const qData = q.query;
-//   const PathId = qData.id;
-//   console.log(PathId);
-//   res.send(MockData);
-// });
 app.post("/login", (req, res) => {
   const PostName = req.body.name;
   const PostPass = req.body.password;
@@ -71,6 +64,32 @@ app.post("/sign-up", (req, res) => {
     res.send(JSON.stringify({ message: "done" }));
   } else {
     console.log("Already Used");
+  }
+});
+app.post("/delete", (req, res) => {
+  const DeleteName = req.body.name;
+  const DeletePass = req.body.password;
+  const SameUser = MockData.find((user) => {
+    return user.name === DeleteName && user.password === DeletePass;
+  });
+  if (SameUser === undefined) {
+    res.send(JSON.stringify({ message: "No such user" }));
+    console.log("no such user");
+  }
+  if (SameUser !== undefined) {
+    const result = MockData.filter((item) => {
+      return item.name !== DeleteName && item.password !== DeletePass;
+    });
+    fs.writeFileSync(
+      "/Users/24HP6298/Desktop/express-backend/express/JSON/index.json",
+      JSON.stringify(result),
+      (err) => {
+        console.log(err);
+      }
+    );
+    res.send("hi");
+    console.log("Succesfully deleted");
+    console.log(result);
   }
 });
 app.listen(3000, console.log("running"));
